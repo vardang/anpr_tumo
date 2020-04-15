@@ -19,6 +19,13 @@ After cloning go to anpr_tumo directory and create python virtual environment
     python3 -m venv env
 ```
 
+# Installing the dependencies
+This will install all required 3-rd party libraries
+
+```Bash
+    pip3 install -r requirements.txt
+```
+
 # Activating the environment
 
 Call the following command in your terminal in order to activate the environment.
