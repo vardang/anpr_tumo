@@ -40,3 +40,14 @@ for example
 ```Bash
     python3 src/bin/anpr.py --config aws_textract --image ~/Pictures/car.jpg
 ```
+
+# OpenAlpr Setup
+```Bash
+Download openalpr-2.3.0-win-64bit.zip from GitHub  https://github.com/openalpr/openalpr/releases
+Open alpr Application file
+Download OpenALPR source code from GitHub   https://github.com/openalpr/openalpr/releases
+For python binding go to \openalpr-2.3.0\src\bindings\python folder
+python setup.py install
+
+Official guide https://github.com/openalpr/openalpr/wiki/Compilation-instructions-(Windows)
+```

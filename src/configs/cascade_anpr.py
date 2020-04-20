@@ -5,8 +5,17 @@ from PIL import Image
 import os
 
 
-# Computes safe region of image
-def computeSafeRegion(shape, bounding_rect):
+def computeSafeRegion(shape: tuple, bounding_rect: tuple) -> tuple:
+    """
+
+    Args:
+        shape(np.ndarray): Image shape
+        bounding_rect(tuple): Rectangle x,y,w,h
+
+    Returns:
+        Safe region coordinates
+
+    """
     top = bounding_rect[1]  # y
     bottom = bounding_rect[1] + bounding_rect[3]  # y +  h
     left = bounding_rect[0]  # x
@@ -24,17 +33,39 @@ def computeSafeRegion(shape, bounding_rect):
         bottom = max_bottom
     if right > max_right:
         right = max_right
+
     return [left, top, right - left, bottom - top]
 
 
-# Crops image
-def cropImage(image, rect):
+def cropImage(image: np.ndarray, rect: tuple) -> np.ndarray:
+    """
+
+    Args:
+        image(np.ndarray): Image
+        rect(tuple): rectangle x,y,h,w
+
+    Returns:
+        First cropped image
+
+    """
     x, y, w, h = computeSafeRegion(image.shape, rect)
     return image[y:y + h, x:x + w]
 
 
-# Detect propoble plate cropped images
-def detectPlateRough(image_gray, resize_h=720, en_scale=1.08, top_bottom_padding_rate=0.05):
+def detectPlateRough(image_gray: np.ndarray, resize_h: int = 720, en_scale: float = 1.08,
+                     top_bottom_padding_rate: float = 0.05) -> list:
+    """
+
+    Args:
+        image_gray(np.ndarray): Image
+        resize_h(int): Height
+        en_scale(float): Scale
+        top_bottom_padding_rate(float): padding rate
+
+    Returns:
+        List of probable plate numbers
+
+    """
     path = "..//..//resources//cascade.xml"
     watch_cascade = cv2.CascadeClassifier(os.path.realpath(path))
     if top_bottom_padding_rate > 0.2:
@@ -56,21 +87,40 @@ def detectPlateRough(image_gray, resize_h=720, en_scale=1.08, top_bottom_padding
 
         cropped = cropImage(image_color_cropped, (int(x), int(y), int(w), int(h)))
         cropped_images.append(cropped)
+
     return cropped_images
 
 
-# Resize image
-def resizeImage(img):
+def resizeImage(img: np.ndarray) -> Image.Image:
+    """
+
+    Args:
+        img(np.ndarray): Image
+
+    Returns:
+        Resized image Image.Image
+
+    """
     im = Image.fromarray(img)
     length_x, width_y = im.size
     factor = min(1, float(1024.0 / length_x))
     size = int(factor * length_x), int(factor * width_y)
     im_resized = im.resize(size, Image.ANTIALIAS)
+
     return im_resized
 
 
-# Crops image
-def secondCrop(img):
+def secondCrop(img: np.ndarray) -> np.ndarray:
+    """
+
+    Args:
+        img(array): Image
+
+    Returns:
+        Second cropped image np.ndarray
+
+
+    """
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ret, thresh = cv2.threshold(gray, 127, 255, 0)
     contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
@@ -83,12 +133,21 @@ def secondCrop(img):
         secondCropped = img[y:y + h, x:x + w]
     else:
         secondCropped = img
+
     return secondCropped
 
 
-# Detect plate number
-def recognise(imag: str) -> str:
-    img = cv2.imread(imag)
+def recognise(image: str) -> str:
+    """
+
+    Args:
+        image (str): Image path
+
+    Returns:
+        Detected number plate string
+
+    """
+    img = cv2.imread(image)
     images = detectPlateRough(image_gray=img, resize_h=img.shape[0], top_bottom_padding_rate=0.1)
 
     for plate in images:
@@ -108,9 +167,6 @@ def recognise(imag: str) -> str:
             index2 = space2 + 4
             platenumber = text[index1:index2]
         else:
-            print("Plate number not found")
+            print("Number plate not found")
 
     return platenumber
-
-
-
