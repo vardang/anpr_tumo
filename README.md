@@ -47,3 +47,11 @@ for example
 ```Bash
     python3 src/bin/anpr.py --config aws_textract --image ~/Pictures/car.jpg
 ```
+
+# OpenAlPR Setup
+
+Install OpenALPR on your system
+
+Official guides:
+* https://github.com/openalpr/openalpr/wiki/Compilation-instructions-(Windows)
+* https://github.com/openalpr/openalpr
