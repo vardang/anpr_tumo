@@ -17,7 +17,7 @@ def download_image(src: str, path: str):
         outfile.write(r.content)
 
 
-driver = webdriver.Chrome('..\\..\\..\\resources\\chromedriver')
+driver = webdriver.Chrome()
 
 base_path = os.path.join(os.getcwd(), 'cars')
 current_url = "https://www.list.am/category/23"
@@ -74,7 +74,10 @@ def getNextPage():
                     # Downloads the images to the corresponding path
                     if not is_failed:
                         download_image(src, dir_path)
-        except:
+        except Exception as err:
+            print("Not found attribute car_name, car_model or car_year .")
+            print(err)
+
             pass
 
     global current_url
